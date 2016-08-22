@@ -11,44 +11,68 @@ library(raster)
 # Import a polygon shapefile: readOGR("path","fileName")
 # no extension needed as readOGR only imports shapefiles
 aoiBoundary_HARV <- readOGR("NEONDSSiteLayoutFiles/HARV", "HarClip_UTMZ18")
+lines_HARV <- readOGR("NEONDSSiteLayoutFiles/HARV", "HARV_roads")
+point_HARV <- readOGR("NEONDSSiteLayoutFiles/HARV", "HARVtower_UTM18N")
 
-# view just the class for the shapefile
-class(aoiBoundary_HARV)
+class(x=point_HARV)
+length(lines_HARV)
+length(lines_HARV@data)
+extent(lines_HARV)
+crs(lines_HARV)
 
-## [1] "SpatialPolygonsDataFrame"
-## attr(,"package")
-## [1] "sp"
+names(lines_HARV@data)
+names(point_HARV@data)
 
-# view just the crs for the shapefile
-crs(aoiBoundary_HARV)
+head(lines_HARV@data)
+levels(lines_HARV@data$TYPE)
+plot(lines_HARV@data$TYPE)
 
-## CRS arguments:
-##  +proj=utm +zone=18 +datum=WGS84 +units=m +no_defs +ellps=WGS84
-## +towgs84=0,0,0
+lines_HARV$TYPE
+table(lines_HARV$TYPE)
 
-# view just the extent for the shapefile
-extent(aoiBoundary_HARV)
+lines_HARV[lines_HARV$type == "footpath",]
 
-# alternate way to view attributes 
-aoiBoundary_HARV@data
+footpath_HARV <- lines_HARV[lines_HARV$TYPE == "footpath",]
+footpath_HARV
+length(footpath_HARV)
+length(lines_HARV)
 
-# view a summary of metadata & attributes associated with the spatial object
-summary(aoiBoundary_HARV)
+plot(lines_HARV,col='red')
+plot(footpath_HARV,add=TRUE,col=c("green","blue"),lwd=6)
 
-# create a plot of the shapefile
-# 'lwd' sets the line width
-# 'col' sets internal color
-# 'border' sets line color
-plot(aoiBoundary_HARV, col="cyan1", border="black", lwd=3, main="AOI Boundary Plot")
+#per usare i valori per classificare deve essere tipo "factor" verifichiamo
+class(lines_HARV$TYPE)
+levels(lines_HARV$TYPE)
+summary(lines_HARV$TYPE)
 
-aoiRoads_HARV <- readOGR("NEONDSSiteLayoutFiles/HARV", "HARV_roads")
-aoiTower_HARV <- readOGR("NEONDSSiteLayoutFiles/HARV", "HARVtower_UTM18N")
-aoiCanopyModel <-raster("NEONDSAirborneRemoteSensing/HARV/CHM/HARV_chmCrop.tif")
+# create a color palette of 4 colors - one for each factor level
+roadPalette <- c("blue","green","grey","purple")
+roadPalette
 
-# Plot multiple shapefiles
-plot(aoiCanopyModel,  main="Map of Study Area w/ \nCanopy Height Model")
-plot(aoiBoundary_HARV, add = TRUE)
-plot(aoiRoads_HARV, add = TRUE)
+## [1] "blue"   "green"  "grey"   "purple"
 
-# use the pch element to adjust the symbology of the points
-plot(aoiTower_HARV, add  = TRUE, pch = 19, col = "purple")
+# create a vector of colors - one for each feature in our vector object
+# according to its attribute value
+roadColors <- c("blue","green","grey","red")[lines_HARV$TYPE]
+roadColors
+
+# plot the lines data, apply a diff color to each factor level)
+# plot(lines_HARV, 
+#      col=roadColors,
+#      lwd=6,
+#      main="NEON Harvard Forest Field Site\n Roads & Trails")
+
+# create vector of line widths
+lineWidths <- (c(1,2,3,4))[lines_HARV$TYPE]
+# adjust line width by level
+# in this case, boardwalk (the first level) is the widest.
+plot(lines_HARV, 
+     col=roadColors,
+     main="NEON Harvard Forest Field Site\n Roads & Trails \n Line width varies by TYPE Attribute Value",
+     lwd=lineWidths)
+
+legend("bottomright",
+       legend = levels(lines_HARV$TYPE),
+       fill=roadPalette,
+       bty = "n",
+       cex=.8)
