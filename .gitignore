@@ -2,10 +2,4 @@
 .Rhistory
 .RData
 zips
-rgbRaster.tif
-abalone.csv
-abalone.RData
-NEONDSAirborneRemoteSensing/
-NEONDSSiteLayoutFiles/
-rasterLayers_tif/
-zips
+SJER_140123_chip.h5
