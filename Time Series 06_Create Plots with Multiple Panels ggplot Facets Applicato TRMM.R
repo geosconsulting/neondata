@@ -8,7 +8,7 @@ library(grid)   # for arrangeing plots
 library(dplyr)  # for subsetting by season
 
 data.dir <- "C:/sparc/input_data/landslides/landslides_R/TRMM_2000_2015/"
-cntry <- "india"
+cntry <- "kenia"
 ext <- ".csv"
 
 cntry.precipitation <- read.csv(
