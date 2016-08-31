@@ -32,7 +32,9 @@ hist(sr,breaks=10)
 #that explain most of the total variance (Santos et al.,2010)
 pca <- rasterPCA(img=drought_stack, nSamples = 1000,spca = T) #,nComp = 3
 summary(pca$model)
-#hist(pca$map)
+
+hist(pca$map)
+
 plot(pca$map)
 
 #ggRGB(pca$map,1,2,3,stretch = "lin",q=0)
